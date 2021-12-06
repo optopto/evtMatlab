@@ -1,24 +1,41 @@
-function [] = acquisitionEmergent(directorio,nameIm,secuencia)
-    vid = videoinput('gige', 1, 'Mono8');
-    preview(vid);
+function [] = acquisitionEmergent(directorio,secuencia,vid,option)
+    nameIm = 'imagen';
     vid.FramesPerTrigger = secuencia;
-    start(vid)
-    stoppreview(vid);
-    img =  getdata(vid);
     createDir(directorio)
     cd(directorio)
-    countIma = 1;
-    while countIma <= secuencia     
-        if(countIma > 0 && countIma < 10)
-            imwrite(img(:,:,1,countIma),[nameIm '000' num2str(countIma) '.tiff']);
-        elseif(countIma >= 10 && countIma < 100)
-            imwrite(img(:,:,1,countIma),[nameIm '00' num2str(countIma) '.tiff']);
-        elseif(countIma >= 100 && countIma < 1000)
-            imwrite(img(:,:,1,countIma),[nameIm '0' num2str(countIma) '.tiff']);
-        end
-       
-        fprintf(['Saved image ' num2str(countIma) ' \n']);
-        countIma = countIma + 1;
+    switch nargin
+        case 3
+            preview(vid);
+            vid.FramesPerTrigger = secuencia;
+            start(vid)
+            stoppreview(vid);
+            img =  getdata(vid);
+            countIma = 1;
+            while countIma <= secuencia     
+                if(countIma > 0 && countIma < 10)
+                    imwrite(img(:,:,1,countIma),[nameIm '000' num2str(countIma) '.tiff']);
+                elseif(countIma >= 10 && countIma < 100)
+                    imwrite(img(:,:,1,countIma),[nameIm '00' num2str(countIma) '.tiff']);
+                elseif(countIma >= 100 && countIma < 1000)
+                    imwrite(img(:,:,1,countIma),[nameIm '0' num2str(countIma) '.tiff']);
+                end
+                fprintf(['Saved image ' num2str(countIma) ' \n']);
+                countIma = countIma + 1;
+            end
+            cd('/home/pc/Documentos/matlab_/emergent/')
+        case 4
+            preview(vid);
+            start(vid)
+            stoppreview(vid);
+            img =  getdata(vid);
+            [w,h,~,~] = size(img);
+            average = zeros(w,h);
+            countIma = 1;
+            while countIma <= secuencia     
+                average = average + img(:,:,1,countIma)             
+                countIma = countIma + 1;
+            end
+            imwrite(average,['average_' nameIm '.tiff']);
+            cd('/home/pc/Documentos/matlab_/emergent/')
     end
-    cd('C:\Users\BastianRomeroMardone\Documents\MATLAB')
 end
