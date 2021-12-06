@@ -22,20 +22,22 @@ function [] = acquisitionEmergent(directorio,secuencia,vid,option)
                 fprintf(['Saved image ' num2str(countIma) ' \n']);
                 countIma = countIma + 1;
             end
-            cd('/home/pc/Documentos/matlab_/emergent/')
+            cd('C:\Users\optolab\Desktop\PULPOS\matlab_')
         case 4
             preview(vid);
             start(vid)
             stoppreview(vid);
             img =  getdata(vid);
             [w,h,~,~] = size(img);
-            average = zeros(w,h);
+            average = uint8(zeros(w,h));
             countIma = 1;
             while countIma <= secuencia     
-                average = average + img(:,:,1,countIma)             
+                average = average + img(:,:,1,countIma);             
                 countIma = countIma + 1;
             end
+            average = average/secuencia;
+            
             imwrite(average,['average_' nameIm '.tiff']);
-            cd('/home/pc/Documentos/matlab_/emergent/')
+            cd('C:\Users\optolab\Desktop\PULPOS\matlab_')
     end
 end
